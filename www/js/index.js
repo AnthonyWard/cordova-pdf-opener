@@ -39,7 +39,7 @@ var app = {
             targetPdf,
             () => {
                 // file has already been copied so...
-                alert(`file already copied to ${targetPdf.toURL}, opening now...`);
+                alert(`file already copied to ${targetPdf}, opening now...`);
                 openTheThing(targetPdf, fileMIMEType); 
             },
             (error) => {
@@ -47,7 +47,8 @@ var app = {
                     sourcePdf,
                     targetPdf,
                     () => {
-                        alert(`file copied to ${targetPdf.toURL}, opening now...`);
+                        // success
+                        alert(`file copied to ${targetPdf}, opening now...`);
                         openTheThing(targetPdf, fileMIMEType); 
                     },
                     (error) => {
