@@ -29,31 +29,29 @@ var app = {
     onDeviceReady: function() {
         this.receivedEvent('deviceready');
 
-        let sourcePdf = cordova.file.applicationDirectory + "www/test.pdf";
-        let fileMIMEType = "application/pdf"
-
-        resolveLocalFileSystemURL(sourcePdf, function(entry) {
-            var nativePath = entry.toInternalURL();
-            openTheThing(nativePath, fileMIMEType);
-        });
-
-        var pdfFileName = "test.pdf",
-			targetPdf;
-        targetPdf = cordova.file.externalDataDirectory + pdfFileName;
+        let pdfFileName = "test.pdf",
+            sourcePdf = cordova.file.applicationDirectory + "www/" + pdfFileName,
+            targetPdf = cordova.file.externalDataDirectory + pdfFileName;
+            fileMIMEType = "application/pdf"
 
         // Check whether the sample PDF file exists.
         window.resolveLocalFileSystemURL(
-            sourcePdf,
-            loadPdfFromFileEntry, // success
-            function (error) { //error
-                console.log(`copying from ${sourcePdf.toURL} to ${targetPdf.toURL}`)
+            targetPdf,
+            () => {
+                // file has already been copied so...
+                alert(`file already copied to ${targetPdf.toURL}, opening now...`);
+                openTheThing(targetPdf, fileMIMEType); 
+            },
+            (error) => {
                 copyFile(
                     sourcePdf,
                     targetPdf,
-                    loadPdfFromFileEntry,
-                    function(error) {
-                        alert("Error copying file.");
-                        console.log("Error: " + JSON.stringify(error, null, 4));
+                    () => {
+                        alert(`file copied to ${targetPdf.toURL}, opening now...`);
+                        openTheThing(targetPdf, fileMIMEType); 
+                    },
+                    (error) => {
+                        alert("Error copying file: " + JSON.stringify(error, null, 4));
                     });
             });
 
@@ -67,25 +65,16 @@ var app = {
                         alert('Error status: ' + e.status + ' - Error message: ' + e.message + '. File path: ' + filePath);
                     },
                     success : function () {
-                        alert('file opened successfully'); 				
+                        alert('File opened successfully'); 				
                     }
                 }
             );
-        }
-
-        function loadPdf(targetUrl) {
-            console.log("Loading PDF file from: " + targetUrl);
-            // window.open(targetUrl, "_system", "location=yes,hidden=no");
-        }
-        
-        function loadPdfFromFileEntry(fileEntry) {
-            loadPdf(fileEntry.toURL());	
         }
         
         function copyFile(sourceUri, targetUri, successFunction, errorFunction) {
             var fileTransfer = new FileTransfer();
             
-            console.log("Copying PDF file from: " + sourceUri + " to: " + targetUri);	
+            alert("Copying file from: " + sourceUri + " to: " + targetUri);	
         
             fileTransfer.download(
                 encodeURI(sourceUri),
